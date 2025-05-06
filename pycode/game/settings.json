@@ -1,0 +1,10 @@
+{
+    "fps": 60,
+    "show_fps": false,
+    "display": 0,
+    "display_width": 800,
+    "display_height": 600,
+    "display_fullscreen": false,
+    "volume_music": 20,
+    "volume_sound": 20
+}
