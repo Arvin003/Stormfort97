@@ -28,6 +28,7 @@ class Registry:
         self.player_texture['fire'] = temp
         temp = [self.load_image(f"resources/images/ship_player/waves/{i}.png", True) for i in range(5)]
         self.player_texture['waves'] = temp
+        self.player_texture['health'] = self.load_image(f"resources/images/ship_player/health.png", True)
 
     def load_music(self):
         """Загрузка музыки"""

@@ -59,7 +59,7 @@ class ChooseLevelWindow:
         label = Label("Выбор уровня", self.registry.fonts['main']['title'], True)
         label.create()
         label.set_pos(settings.width // 2 - label.get_width_text() // 2,
-                      settings.height * 0.0)
+                      settings.height * 0.05)
         self.labels['1'] = label
 
         # Установка кнопок
@@ -70,7 +70,7 @@ class ChooseLevelWindow:
         button.set_size(settings.width * 0.4, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width * 0.3,
-                       settings.height * 0.1)
+                       settings.height * 0.15)
         button.set_action(lambda : self.start_level(1))
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['level1'] = button
@@ -82,12 +82,15 @@ class ChooseLevelWindow:
         button.set_size(settings.width * 0.4, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width * 0.3,
-                       settings.height * 0.225)
+                       settings.height * 0.275)
         button.set_action(lambda: self.start_level(2))
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['level2'] = button
 
         button = Button("Назад", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
         button.set_size(settings.width * 0.3, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width // 2 - (settings.width * 0.15),

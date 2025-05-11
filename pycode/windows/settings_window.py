@@ -42,9 +42,10 @@ class SettingsWindow:
         self.registry.load_music()
         self.registry.load_sounds()
 
-        # Загрузка изображений главного меню
+        # Загрузка изображений меню настроек
         self.registry.load_main_menu_background()
         self.background = BackgroundAnimatedUi(self.registry.main_menu_background, settings.fps // 10)
+        self.registry.load_buttons_images()
 
         # Установка текста
         if settings.show_fps:
@@ -77,7 +78,7 @@ class SettingsWindow:
                       settings.height * 0.275)
         self.labels['4'] = label
 
-        label = Label("Отображать частоту кадров", self.registry.fonts['main']['small'], True)
+        label = Label("Отображать FPS", self.registry.fonts['main']['small'], True)
         label.create()
         label.set_pos(settings.width * 0.525,
                       settings.height * 0.275)
@@ -97,6 +98,9 @@ class SettingsWindow:
 
         # Установка кнопок
         button = Button("Сбросить", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
         button.set_size(settings.width * 0.3, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width - settings.width * 0.3 - settings.width * 0.033,
@@ -106,6 +110,9 @@ class SettingsWindow:
         self.buttons['default'] = button
 
         button = Button("Применить", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
         button.set_size(settings.width * 0.3, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width // 2 - (settings.width * 0.15),
@@ -115,6 +122,9 @@ class SettingsWindow:
         self.buttons['apply'] = button
 
         button = Button("Назад", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
         button.set_size(settings.width * 0.3, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width * 0.033,

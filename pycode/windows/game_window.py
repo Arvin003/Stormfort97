@@ -25,7 +25,8 @@ class GameWindow:
         self.statistic = {
             'is_won': False,
             'is_lose': False,
-            'time': 0
+            'time': 0,
+            'enemy_kills': 0
         }
         self.labels = dict()
         self.buttons = dict()
@@ -88,9 +89,12 @@ class GameWindow:
         self.player.set_pose(settings.width - self.player.width, settings.height // 2 - (self.player.height // 2))
 
         self.bullets_player = set()
+        self.bullets_enemy = set()
 
-        self.enemy = Player(self.registry, (settings.width // 2, settings.height // 2))
-        self.enemy.set_pose(settings.width // 2, settings.height // 2 - (self.player.height // 2))
+        self.enemies = set()
+        enemy = Player(self.registry, (settings.width // 2, settings.height // 2))
+        enemy.set_pose(settings.width // 2, settings.height // 2 - (self.player.height // 2))
+        self.enemies.add(enemy)
 
         # Предварительная настройка
         self.clock = pygame.time.Clock()
@@ -109,8 +113,11 @@ class GameWindow:
 
     async def menu(self):
         """Логика окна"""
+
+        time_i = 0
         # Игровой цикл
         while self.running:
+            time_i += 1
             # Получаем позицию мыши
             mouse_pos = pygame.mouse.get_pos()
             # Получаем состояние всех кнопок мыши
@@ -148,20 +155,42 @@ class GameWindow:
                 self.player.bullet = None
                 self.bullets_player.add(Bullet(frames, direct, pos))
 
-            destroy_bullet = set()
+            for enemy in self.enemies:
+                enemy.update()
+                if enemy.bullet:
+                    frames = enemy.bullet['frames']
+                    direct = enemy.bullet['direct']
+                    pos = enemy.bullet['pos']
+                    enemy.bullet = None
+                    self.bullets_enemy.add(Bullet(frames, direct, pos))
+
+            # Обработка пуль
+            destroy_bullet_player = set()
+            destroy_bullet_enemy = set()
+            destroy_enemies = set()
             for bullet in self.bullets_player:
                 bullet.update()
-
-                if pygame.sprite.collide_mask(self.enemy, bullet):
-                    bullet.destroy_bullet()
+                for enemy in self.enemies:
+                    if pygame.sprite.collide_mask(enemy, bullet) and not bullet.is_destroy:
+                        enemy.get_damage(bullet.damage)
+                        if enemy.health <= 0:
+                            self.statistic['enemy_kills'] += 1
+                            destroy_enemies.add(enemy)
+                        bullet.destroy_bullet()
                 if bullet.is_kill:
-                    destroy_bullet.add(bullet)
+                    destroy_bullet_player.add(bullet)
 
-            for bullet in destroy_bullet:
+            # Удаление пуль игрока
+            for bullet in destroy_bullet_player:
                 self.bullets_player.discard(bullet)
-            destroy_bullet.clear()
 
-            self.enemy.update()
+            # Удаление пуль врага
+            for bullet in destroy_bullet_enemy:
+                self.bullets_enemy.discard(bullet)
+
+            # Удаление врагов
+            for enemy in destroy_enemies:
+                self.enemies.discard(enemy)
 
             # Отрисовка
             self.background.draw(self.screen)
@@ -180,12 +209,23 @@ class GameWindow:
             for bullet in self.bullets_player:
                 bullet.draw(self.screen)
 
-            self.enemy.draw(self.screen)
+            for enemy in self.enemies:
+                enemy.draw(self.screen)
+
+            # Жизнь персонажа
+            if self.player.health > 0:
+                for i in range(self.player.health):
+                    self.screen.blit(self.player.image_health,
+                                     (self.player.width + self.player.image_health.get_width() * i, 0))
+            else:
+                self.statistic['is_lose'] = True
+                self.running = False
 
             # Отображение
             pygame.display.flip()
             self.clock.tick(settings.fps)
 
+        self.statistic['time'] = time_i // settings.fps
         choose_level_window = ResultWindow(self.screen, self.statistic)
         await choose_level_window.run()
 

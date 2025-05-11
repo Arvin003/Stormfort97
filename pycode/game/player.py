@@ -7,8 +7,11 @@ from pycode.settings import settings
 class Player(Character):
     def __init__(self, registry, pos):
         super().__init__(registry, pos, size=(256, 80), data_textures=registry.player_texture)
+        self.image_health = pygame.transform.scale(registry.player_texture['health'],
+                                                   (64 * settings.k_width, 64 * settings.k_height))
         self.speed_y = 200 * settings.k_height
         self.direct = 'left'
+        self.health = 3
 
     def update(self):
         super().update()

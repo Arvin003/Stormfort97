@@ -23,6 +23,8 @@ class Bullet(pygame.sprite.Sprite):
         if self.direct == 'left':
             self.speed_x = -self.speed_x
 
+        self.damage = 1  # Урон пули
+
         self.is_destroy = False
         self.is_kill = False
 

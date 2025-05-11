@@ -23,6 +23,8 @@ class Character(pygame.sprite.Sprite):
 
         self.speed_x = 100 * settings.k_width
         self.speed_y = 100 * settings.k_height
+        self.speed_attack = settings.fps // 2
+        self.speed_attack_i = 0
         self.x_vel = 0
         self.y_vel = 0
 
@@ -36,12 +38,22 @@ class Character(pygame.sprite.Sprite):
         self.direct = 'right'
 
         self.bullet = None
+        self.health = 1
+
+    def get_damage(self, damage):
+        self.health -= damage
 
     def set_pose(self, x, y):
         self.rect.x, self.rect.y = x, y
 
     def update(self):
-        if self.command['space']:
+        if self.speed_attack_i > 0:
+            self.speed_attack_i += 1
+            if self.speed_attack_i >= self.speed_attack:
+                self.speed_attack_i = 0
+
+        if self.command['space'] and self.speed_attack_i == 0:
+            self.speed_attack_i += 1
             self.bullet = {
                 'direct': self.direct,
                 'frames': self.data_textures['fire'],

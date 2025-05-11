@@ -46,9 +46,10 @@ class ResultWindow:
         # Загрузка изображений кнопок
         self.registry.load_buttons_images()
 
-        # Загрузка изображений главного меню
+        # Загрузка изображений меню статистики
         self.registry.load_game_background()
         self.background = BackgroundAnimatedUi(self.registry.game_background, settings.fps // 7.5)
+        self.registry.load_buttons_images()
 
         # Установка текста
         if settings.show_fps:
@@ -57,8 +58,51 @@ class ResultWindow:
             label.set_pos(0, 0)
             self.labels['fps'] = label
 
+        if self.statistic['is_lose']:
+            label = Label("Вы проиграли!", self.registry.fonts['main']['small'], True)
+            label.create()
+            label.set_pos(settings.width // 2 - label.get_width_text() // 2, settings.height * 0.05)
+            self.labels['result'] = label
+        elif self.statistic['is_won']:
+            label = Label("Вы победили!", self.registry.fonts['main']['small'], True)
+            label.create()
+            label.set_pos(settings.width // 2 - label.get_width_text() // 2, settings.height * 0.05)
+            self.labels['result'] = label
+        else:
+            label = Label("Вы завершили игру!", self.registry.fonts['main']['small'], True)
+            label.create()
+            label.set_pos(settings.width // 2 - label.get_width_text() // 2, settings.height * 0.05)
+            self.labels['result'] = label
+
+        seconds = self.statistic['time'] % 60
+        minutes = self.statistic['time'] // 60 % 60
+        hours = self.statistic['time'] // 60 // 60
+        label = Label(f"Часы: {hours}", self.registry.fonts['main']['small'], True)
+        label.create()
+        label.set_pos(settings.width * 0.1, settings.height * 0.15)
+        self.labels['hours'] = label
+
+        label = Label(f"Минут: {minutes}", self.registry.fonts['main']['small'], True)
+        label.create()
+        label.set_pos(settings.width * 0.1, settings.height * 0.25)
+        self.labels['minutes'] = label
+
+        label = Label(f"Секунд: {seconds}", self.registry.fonts['main']['small'], True)
+        label.create()
+        label.set_pos(settings.width * 0.1, settings.height * 0.35)
+        self.labels['seconds'] = label
+
+        label = Label(f"Противников побеждено: {self.statistic['enemy_kills']}",
+                      self.registry.fonts['main']['small'], True)
+        label.create()
+        label.set_pos(settings.width * 0.1, settings.height * 0.45)
+        self.labels['enemy_kills'] = label
+
         # Установка кнопок
         button = Button("В меню уровней", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
         button.create()
         button.set_pos(settings.width // 2 - (button.label.get_width_text() // 2),
                        settings.height * 0.9)
