@@ -69,6 +69,7 @@ class GameWindow:
 
         # Загрузка изображений корабля
         self.registry.load_player_texture()
+        self.registry.load_enemy_easy_texture()
 
         # Установка текста
         if settings.show_fps:
@@ -159,8 +160,10 @@ class GameWindow:
                 frames = self.player.bullet['frames']
                 direct = self.player.bullet['direct']
                 pos = self.player.bullet['pos']
+                speed = self.player.bullet['speed']
+                damage = self.player.bullet['damage']
                 self.player.bullet = None
-                self.bullets_player.add(Bullet(frames, direct, pos))
+                self.bullets_player.add(Bullet(frames, direct, pos, speed=speed, damage=damage))
 
             for enemy in self.enemies:
                 enemy.update()
@@ -171,8 +174,10 @@ class GameWindow:
                     frames = enemy.bullet['frames']
                     direct = enemy.bullet['direct']
                     pos = enemy.bullet['pos']
+                    speed = enemy.bullet['speed']
+                    damage = enemy.bullet['damage']
                     enemy.bullet = None
-                    self.bullets_enemy.add(Bullet(frames, direct, pos))
+                    self.bullets_enemy.add(Bullet(frames, direct, pos, speed=speed, damage=damage))
 
             # Обработка пуль
             for bullet in self.bullets_player:
@@ -193,7 +198,7 @@ class GameWindow:
                     self.player.get_damage(bullet.damage)
                     bullet.destroy_bullet()
                 if bullet.is_kill:
-                    destroy_bullet_player.add(bullet)
+                    destroy_bullet_enemy.add(bullet)
 
             # Удаление пуль игрока
             for bullet in destroy_bullet_player:
@@ -261,9 +266,17 @@ class GameWindow:
         if self.level == 1:
             if time == 1:
                 await self.create_enemy((0, settings.height // 2 - (self.player.height // 2)))
+            if time >= settings.fps:
+                if len(self.enemies) == 0:
+                    self.statistic['is_won'] = True
+                    self.running = False
         elif self.level == 2:
             if time == 1:
                 await self.create_enemy((0, settings.height // 2 - (self.player.height // 2)))
+            if time >= settings.fps:
+                if len(self.enemies) == 0:
+                    self.statistic['is_won'] = True
+                    self.running = False
         elif self.level == 5:
             if time % (settings.fps * 10) == 0:
                 x = -settings.width * 0.2

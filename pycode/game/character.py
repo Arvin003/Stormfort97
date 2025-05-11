@@ -23,6 +23,8 @@ class Character(pygame.sprite.Sprite):
 
         self.speed_x = 100 * settings.k_width
         self.speed_y = 100 * settings.k_height
+        self.bullet_damage = 1
+        self.bullet_speed = 400 * settings.k_width / settings.fps
         self.speed_attack = settings.fps // 2
         self.speed_attack_i = 0
         self.x_vel = 0
@@ -39,6 +41,9 @@ class Character(pygame.sprite.Sprite):
 
         self.bullet = None
         self.health = 1
+
+        self.bullet_damage = 1
+        self.bullet_speed = 1
 
     def get_damage(self, damage):
         self.health -= damage
@@ -57,7 +62,9 @@ class Character(pygame.sprite.Sprite):
             self.bullet = {
                 'direct': self.direct,
                 'frames': self.data_textures['fire'],
-                'pos': (self.rect.x, self.rect.y)
+                'pos': (self.rect.x, self.rect.y),
+                'damage': self.bullet_damage,
+                'speed': self.bullet_speed,
             }
 
         if self.command['up']:

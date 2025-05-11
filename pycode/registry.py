@@ -20,6 +20,7 @@ class Registry:
         self.music = dict()
         self.sounds = dict()
         self.player_texture = dict()
+        self.enemy_easy_texture = dict()
 
     def load_player_texture(self):
         self.player_texture.clear()
@@ -29,6 +30,16 @@ class Registry:
         temp = [self.load_image(f"resources/images/ship_player/waves/{i}.png", True) for i in range(5)]
         self.player_texture['waves'] = temp
         self.player_texture['health'] = self.load_image(f"resources/images/ship_player/health.png", True)
+
+    def load_enemy_easy_texture(self):
+        self.enemy_easy_texture.clear()
+        self.enemy_easy_texture['orig'] = self.load_image(f"resources/images/ship_player/ship.png", mirror_h=True,
+                                                          is_alpha=True)
+        temp = [self.load_image(f"resources/images/ship_player/fire/{i}.png", mirror_h=True, is_alpha=True) for i in
+                range(3)]
+        self.enemy_easy_texture['fire'] = temp
+        temp = [self.load_image(f"resources/images/ship_player/waves/{i}.png", True) for i in range(5)]
+        self.enemy_easy_texture['waves'] = temp
 
     def load_music(self):
         """Загрузка музыки"""

@@ -5,9 +5,12 @@ from pycode.settings import settings
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, frames, direct="left", pos=(0, 0), size=(48, 16)):
+    def __init__(self, frames, direct="left", pos=(0, 0), size=(48, 16), speed=400, damage=1):
         super().__init__()
-        self.size = self.width, self.height = size
+        self.width, self.height = size
+        self.width = self.width * settings.k_width
+        self.height = self.height * settings.k_height
+        self.size = self.width, self.height
         self.frames = frames
         self.image = frames[0]
         self.rect = Rect(*pos, *self.size)
@@ -18,12 +21,12 @@ class Bullet(pygame.sprite.Sprite):
         self.time_end = settings.fps // 10
 
         self.time = 0
-        self.speed_x = 400 * settings.k_width / settings.fps
+        self.speed_x = speed
         self.direct = direct
         if self.direct == 'left':
             self.speed_x = -self.speed_x
 
-        self.damage = 1  # Урон пули
+        self.damage = damage  # Урон пули
 
         self.is_destroy = False
         self.is_kill = False

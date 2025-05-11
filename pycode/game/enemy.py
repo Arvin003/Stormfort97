@@ -6,11 +6,13 @@ from pycode.settings import settings
 
 class Enemy(Character):
     def __init__(self, registry, pos):
-        super().__init__(registry, pos, size=(256, 80), data_textures=registry.player_texture)
-        self.image_health = pygame.transform.scale(registry.player_texture['health'],
-                                                   (64 * settings.k_width, 64 * settings.k_height))
+        super().__init__(registry, pos, size=(256, 80), data_textures=registry.enemy_easy_texture)
         self.speed_y = 100 * settings.k_height
+        self.speed_x = 40 * settings.k_width
         self.direct = 'right'
+        self.bullet_damage = 1
+        self.bullet_speed = 400 * settings.k_width / settings.fps
+        self.speed_attack = settings.fps * 3
         self.health = 3
 
     def update(self):

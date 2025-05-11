@@ -10,8 +10,13 @@ class Player(Character):
         self.image_health = pygame.transform.scale(registry.player_texture['health'],
                                                    (64 * settings.k_width, 64 * settings.k_height))
         self.speed_y = 200 * settings.k_height
+        self.speed_x = 100 * settings.k_width
         self.direct = 'left'
         self.health = 3
+
+        self.bullet_damage = 1
+        self.bullet_speed = 400 * settings.k_width / settings.fps
+        self.speed_attack = settings.fps // 2
 
     def update(self):
         super().update()
