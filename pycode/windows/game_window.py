@@ -1,6 +1,9 @@
+import random
+
 import pygame
 
 from pycode.game.bullet import Bullet
+from pycode.game.enemy import Enemy
 from pycode.game.player import Player
 from pycode.registry import Registry
 from pycode.settings import settings
@@ -14,13 +17,14 @@ from pycode.windows.result_window import ResultWindow
 class GameWindow:
     """Класс окна игры"""
 
-    def __init__(self, screen):
+    def __init__(self, screen, level):
         """Конструктор (инициализация свойств)"""
         self.running = True
         self.registry = None
         self.screen = screen
         self.background = None
         self.clock = None
+        self.level = level
 
         self.statistic = {
             'is_won': False,
@@ -32,7 +36,8 @@ class GameWindow:
         self.buttons = dict()
         self.switches_buttons = dict()
         self.bullets_player = set()
-        self.bullets_enemies = set()
+        self.bullets_enemy = set()
+        self.enemies = set()
 
         self.player = None
 
@@ -90,11 +95,7 @@ class GameWindow:
 
         self.bullets_player = set()
         self.bullets_enemy = set()
-
         self.enemies = set()
-        enemy = Player(self.registry, (settings.width // 2, settings.height // 2))
-        enemy.set_pose(settings.width // 2, settings.height // 2 - (self.player.height // 2))
-        self.enemies.add(enemy)
 
         # Предварительная настройка
         self.clock = pygame.time.Clock()
@@ -109,15 +110,17 @@ class GameWindow:
             "Загрузка"
         )
         self.running = True
-        await self.menu()
+        await self.game()
 
-    async def menu(self):
+    async def game(self):
         """Логика окна"""
 
         time_i = 0
         # Игровой цикл
         while self.running:
             time_i += 1
+            await self.narrator_controller(time_i)
+
             # Получаем позицию мыши
             mouse_pos = pygame.mouse.get_pos()
             # Получаем состояние всех кнопок мыши
@@ -134,6 +137,10 @@ class GameWindow:
                         self.running = False
 
             # Обработка логики
+            destroy_bullet_player = set()
+            destroy_bullet_enemy = set()
+            destroy_enemies = set()
+
             self.background.update()
 
             for name, button in self.buttons.items():
@@ -157,6 +164,9 @@ class GameWindow:
 
             for enemy in self.enemies:
                 enemy.update()
+                if enemy.health <= 0:
+                    destroy_enemies.add(enemy)
+
                 if enemy.bullet:
                     frames = enemy.bullet['frames']
                     direct = enemy.bullet['direct']
@@ -165,9 +175,6 @@ class GameWindow:
                     self.bullets_enemy.add(Bullet(frames, direct, pos))
 
             # Обработка пуль
-            destroy_bullet_player = set()
-            destroy_bullet_enemy = set()
-            destroy_enemies = set()
             for bullet in self.bullets_player:
                 bullet.update()
                 for enemy in self.enemies:
@@ -177,6 +184,14 @@ class GameWindow:
                             self.statistic['enemy_kills'] += 1
                             destroy_enemies.add(enemy)
                         bullet.destroy_bullet()
+                if bullet.is_kill:
+                    destroy_bullet_player.add(bullet)
+
+            for bullet in self.bullets_enemy:
+                bullet.update()
+                if pygame.sprite.collide_mask(self.player, bullet) and not bullet.is_destroy:
+                    self.player.get_damage(bullet.damage)
+                    bullet.destroy_bullet()
                 if bullet.is_kill:
                     destroy_bullet_player.add(bullet)
 
@@ -209,6 +224,9 @@ class GameWindow:
             for bullet in self.bullets_player:
                 bullet.draw(self.screen)
 
+            for bullet in self.bullets_enemy:
+                bullet.draw(self.screen)
+
             for enemy in self.enemies:
                 enemy.draw(self.screen)
 
@@ -231,3 +249,23 @@ class GameWindow:
 
     async def back(self):
         self.running = False
+
+    async def create_enemy(self, pos):
+        """Создание врага"""
+        enemy = Enemy(self.registry, (settings.width // 2, settings.height // 2))
+        enemy.set_pose(*pos)
+        self.enemies.add(enemy)
+
+    async def narrator_controller(self, time):
+        """Рассказчик игры"""
+        if self.level == 1:
+            if time == 1:
+                await self.create_enemy((0, settings.height // 2 - (self.player.height // 2)))
+        elif self.level == 2:
+            if time == 1:
+                await self.create_enemy((0, settings.height // 2 - (self.player.height // 2)))
+        elif self.level == 5:
+            if time % (settings.fps * 10) == 0:
+                x = -settings.width * 0.2
+                y = random.randint(0, settings.height - 80)
+                await self.create_enemy((x, y))

@@ -87,6 +87,19 @@ class ChooseLevelWindow:
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['level2'] = button
 
+        button = Button("Бонусный уровень"
+                        "", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
+        button.set_size(settings.width * 0.4, settings.height * 0.1)
+        button.create()
+        button.set_pos(settings.width * 0.3,
+                       settings.height * 0.4)
+        button.set_action(lambda: self.start_level(5))
+        button.set_sound_click(self.registry.sounds['menu']['click'])
+        self.buttons['level5'] = button
+
         button = Button("Назад", self.registry.fonts['main']['normal'], True)
         button.set_images(normal=self.registry.buttons['standard']['normal'],
                           hover=self.registry.buttons['standard']['hover'],
@@ -160,7 +173,7 @@ class ChooseLevelWindow:
             self.clock.tick(settings.fps)
 
     async def start_level(self, level=0):
-        game_window = GameWindow(self.screen)
+        game_window = GameWindow(self.screen, level)
         await game_window.run()
         self.registry.music['menu'].play()
 

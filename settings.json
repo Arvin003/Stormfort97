@@ -1,9 +1,9 @@
 {
     "fps": 60,
     "show_fps": true,
-    "display": 0,
-    "display_width": 1366,
-    "display_height": 768,
+    "display": 1,
+    "display_width": 1920,
+    "display_height": 1080,
     "display_fullscreen": false,
     "volume_music": 10,
     "volume_sound": 10
