@@ -77,7 +77,7 @@ class MainWindow:
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['start'] = button
 
-        button = Button("Настройки", self.registry.fonts['main']['normal'], True)
+        button = Button("Магазин Кораблей", self.registry.fonts['main']['normal'], True)
         button.set_images(normal=self.registry.buttons['standard']['normal'],
                           hover=self.registry.buttons['standard']['hover'],
                           pressed=self.registry.buttons['standard']['pressed'])
@@ -85,6 +85,18 @@ class MainWindow:
         button.create()
         button.set_pos(settings.width // 2 - settings.width * 0.4 // 2,
                        settings.height * 0.4)
+        button.set_action(self.settings_button)
+        button.set_sound_click(self.registry.sounds['menu']['click'])
+        self.buttons['shop'] = button
+
+        button = Button("Настройки", self.registry.fonts['main']['normal'], True)
+        button.set_images(normal=self.registry.buttons['standard']['normal'],
+                          hover=self.registry.buttons['standard']['hover'],
+                          pressed=self.registry.buttons['standard']['pressed'])
+        button.set_size(settings.width * 0.4, settings.height * 0.1)
+        button.create()
+        button.set_pos(settings.width // 2 - settings.width * 0.4 // 2,
+                       settings.height * 0.5)
         button.set_action(self.settings_button)
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['settings'] = button
@@ -96,7 +108,7 @@ class MainWindow:
         button.set_size(settings.width * 0.4, settings.height * 0.1)
         button.create()
         button.set_pos(settings.width // 2 - settings.width * 0.4 // 2,
-                       settings.height * 0.5)
+                       settings.height * 0.6)
         button.set_action(self.exit_game)
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['exit'] = button
