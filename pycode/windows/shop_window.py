@@ -56,7 +56,7 @@ class ShoplWindow:
             label.set_pos(0,0)
             self.labels['fps'] = label
 
-        label = Label("Выбор Корабля", self.registry.fonts['main']['title'], True)
+        label = Label("Выбор  Корабля", self.registry.fonts['main']['title'], True)
         label.create()
         label.set_pos(settings.width // 2 - label.get_width_text() // 2,
                       settings.height * 0.05)

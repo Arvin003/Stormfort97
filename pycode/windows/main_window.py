@@ -85,7 +85,7 @@ class MainWindow:
         button.create()
         button.set_pos(settings.width // 2 - settings.width * 0.4 // 2,
                        settings.height * 0.4)
-        button.set_action(self.settings_button)
+        button.set_action(self._button)
         button.set_sound_click(self.registry.sounds['menu']['click'])
         self.buttons['shop'] = button
 
